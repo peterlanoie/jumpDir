@@ -14,7 +14,7 @@ namespace Pelasoft.JumpDir
 		private const string _userDataFile = "userdata.json";
 		private const string _noTargetResponse = "[no target]";
 
-		private Regex _backRefExp = new Regex(@"(?<backref>(\.\.\\?)+)(?<dir>[^ ]+)?");
+		private Regex _backRefExp = new Regex(@"(?<backref>[\.\\][\.\\]*)(?<dir>[^ ]+)?");
 
 		private bool _verbose = true;
 		private string _userDataFilePath;
