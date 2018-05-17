@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -153,7 +153,7 @@ namespace Pelasoft.JumpDir
 					var results = dirs.Where(dir => search(dir, searchDir)).ToArray();
 					if (results.Count() == 1)
 					{
-						// if theres 1, go to it
+						// if there's 1, go to it
 						return UpdateDirectoryUse(results.First(), searchDir);
 					}
 					else if (results.Count() > 1)
