@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,10 +16,9 @@ namespace Pelasoft.JumpDir
 
 		private Regex _backRefExp = new Regex(@"(?<backref>[\.\\][\.\\]*)(?<dir>[^ ]+)?");
 
-		private bool _verbose = true;
+		private bool _verbose = false;
 		private string _userDataFilePath;
 		private UserData _userData;
-
 
 		static void Main(string[] args)
 		{
@@ -28,6 +27,8 @@ namespace Pelasoft.JumpDir
 
 		private void Run(string[] args)
 		{
+			var doCD = true;
+
 			Verbose(() => $"raw args: { string.Join(' ', args)}\n");
 			//			args.ToList().ForEach(x => Verbose($"   {x}"));
 
@@ -57,9 +58,59 @@ namespace Pelasoft.JumpDir
 			var commands = args.Where(x => x.StartsWith('-')).Select(x => x.ToLower().TrimStart('-'));
 			Verbose(() => $"captured command(s): { string.Join(' ', commands) }");
 
-			args = args.Where(x => !x.StartsWith('-')).ToArray();
+			if (commands.Count() > 0)
+			{
+				foreach (var command in commands)
+				{
+					switch (command)
+					{
+						case "clear":
+						case "c":
+							ClearEntries();
+							doCD = false;
+							break;
 
-			Console.WriteLine(FindDirectory(args.Length > 0 ? args[0] : null));
+						case "history":
+						case "h":
+							ShowHistory();
+							doCD = false;
+							break;
+
+						case "verbose":
+						case "v":
+							_verbose = true;
+							break;
+					}
+				}
+
+				Console.WriteLine(_noTargetResponse);
+			}
+			if (doCD)
+			{
+				args = args.Where(x => !x.StartsWith('-')).ToArray();
+				Console.WriteLine(FindDirectory(args.Length > 0 ? args[0] : null));
+			}
+		}
+
+		private void ShowHistory()
+		{
+			Log("jumpDir usage history\n");
+
+			if (_userData.Entries.Count() > 0)
+			{
+				Log("  Rank    Path");
+				var maxWidth = _userData.Entries.Max(x => x.Path.Length);
+				Log("  ==========================================");
+				foreach (var entry in _userData.Entries.OrderByDescending(x => x.Rank))
+				{
+					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}");
+				}
+			}
+			else
+			{
+				Log("No entries yet.");
+			}
+			Log();
 		}
 
 		private string FindDirectory(string searchDir)
@@ -86,8 +137,8 @@ namespace Pelasoft.JumpDir
 				}
 			}
 			var dirs = Directory.GetDirectories(targetPath);
-//				.Select(x => x.Replace(targetPath, "", StringComparison.InvariantCultureIgnoreCase));
-//				.Select(x => Path.GetFileName(x));
+			//				.Select(x => x.Replace(targetPath, "", StringComparison.InvariantCultureIgnoreCase));
+			//				.Select(x => Path.GetFileName(x));
 			if (searchDir != null)
 			{
 				var searches = new Func<string, string, bool>[]
@@ -143,7 +194,7 @@ namespace Pelasoft.JumpDir
 				}
 				var key = entry.Keys.SingleOrDefault(x => x.Equals(search, StringComparison.InvariantCultureIgnoreCase));
 				if (key == null)
-			{
+				{
 					entry.Keys.Add(search);
 				}
 			}
@@ -151,6 +202,12 @@ namespace Pelasoft.JumpDir
 			_userData.LastPath = path;
 			SaveData();
 			return path;
+		}
+
+		private void ClearEntries()
+		{
+			_userData.Entries.Clear();
+			SaveData();
 		}
 
 		private void SaveData()
