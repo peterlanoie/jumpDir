@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -135,13 +135,13 @@ namespace Pelasoft.JumpDir
 				entry.Rank++;
 			}
 			_userData.LastPath = path;
-			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
+			SaveData();
 			return path;
 		}
 
 		private void SaveData()
 		{
-
+			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
 		}
 
 		//private void Verbose(string message = null)
