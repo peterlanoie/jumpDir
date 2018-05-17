@@ -102,7 +102,7 @@ namespace Pelasoft.JumpDir
 					if (results.Count() == 1)
 					{
 						// if theres 1, go to it
-						return UpdateDirectoryUse(results.First());
+						return UpdateDirectoryUse(results.First(), searchDir);
 					}
 					else if (results.Count() > 1)
 					{
@@ -124,7 +124,7 @@ namespace Pelasoft.JumpDir
 			return _noTargetResponse;
 		}
 
-		private string UpdateDirectoryUse(string path)
+		private string UpdateDirectoryUse(string path, string search)
 		{
 			var entry = _userData.Entries.FirstOrDefault(x => x.Path == path);
 			if (entry == null)
@@ -135,6 +135,19 @@ namespace Pelasoft.JumpDir
 			{
 				entry.Rank++;
 			}
+			if (search.Length >= 2)
+			{
+				if (entry.Keys == null)
+				{
+					entry.Keys = new List<string>();
+				}
+				var key = entry.Keys.SingleOrDefault(x => x.Equals(search, StringComparison.InvariantCultureIgnoreCase));
+				if (key == null)
+			{
+					entry.Keys.Add(search);
+				}
+			}
+
 			_userData.LastPath = path;
 			SaveData();
 			return path;
