@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -120,6 +120,7 @@ namespace Pelasoft.JumpDir
 
 			if (searchDir != null)
 			{
+				_userData.LastSearch = searchDir;
 				Verbose(() => $"finding possible directories for: {searchDir}");
 				var backRefMatch = _backRefExp.Match(searchDir);
 
