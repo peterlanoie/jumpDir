@@ -8,6 +8,8 @@ namespace Pelasoft.JumpDir
 	{
 		public string Path { get; set; }
 
-		public int LaunchCount { get; set; }
+		public decimal Rank { get; set; }
+
+		public List<string> Keys { get; set; }
 	}
 }

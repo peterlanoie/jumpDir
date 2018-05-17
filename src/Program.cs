@@ -58,11 +58,11 @@ namespace Pelasoft.JumpDir
 				var entry = userData.Entries.FirstOrDefault(x => x.Path == targetPath);
 				if (entry == null)
 				{
-					userData.Entries.Add(entry = new Entry { Path = targetPath, LaunchCount = 1 });
+					userData.Entries.Add(entry = new Entry { Path = targetPath, Rank = 1 });
 				}
 				else
 				{
-					entry.LaunchCount++;
+					entry.Rank++;
 				}
 				userData.LastPath = targetPath;
 				File.WriteAllText(userDataFilePath, JsonConvert.SerializeObject(userData, Formatting.Indented));
