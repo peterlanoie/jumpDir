@@ -1,0 +1,32 @@
+
+Blatantly influenced by: 
+	https://github.com/wting/autojump (https://olivierlacan.com/posts/cd-is-wasting-your-time/)
+	https://github.com/rupa/z
+
+search order precendence:
+	previous entries that match arg
+	sub dirs that START with arg
+	sub dirs that CONTATIN arg
+
+don't save backref only (i.e. "..\*n")
+
+fuzzy logic behaviors
+	- save possible matches (both previous used matched entries and matched local dirs)
+	and the one used (first)
+	- when next called without arg, cd to first after last used in previous set; update last used
+	- maybe emit the set list with numbers on entries and indicator showing which entry is active
+
+when arg contains environment separator (e.g. / or \)
+	set search context to relative location and search there
+		jd "..\x"
+			context is ".\..\"; search "x"
+		jd "\x" context is "\" (root); search "x"
+
+extra commands:
+	-s[tats] show history with jump counts, etc.
+	-c[lear] clears the history
+	-v[erbose] display details on what it's doing to standard error stout reserved for return value 
+
+other ideas:
+	"ji" (i.e. jump into) pushd but with jumpDir searching
+	"jo" (i.e. jump outof) popd
