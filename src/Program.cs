@@ -70,9 +70,9 @@ namespace Pelasoft.JumpDir
 							doCD = false;
 							break;
 
-						case "history":
-						case "h":
-							ShowHistory();
+						case "stats":
+						case "s":
+							ShowStats();
 							doCD = false;
 							break;
 
@@ -92,9 +92,9 @@ namespace Pelasoft.JumpDir
 			}
 		}
 
-		private void ShowHistory()
+		private void ShowStats()
 		{
-			Log("jumpDir usage history\n");
+			Log("  jumpDir usage statistics\n");
 
 			if (_userData.Entries.Count() > 0)
 			{
@@ -105,6 +105,7 @@ namespace Pelasoft.JumpDir
 				{
 					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}");
 				}
+				Log("\n  Use the '-[c]lear' command to reset all usage.");
 			}
 			else
 			{
