@@ -12,6 +12,7 @@ namespace Pelasoft.JumpDir
 	{
 		private const string _userDataDir = ".jumpDir";
 		private const string _userDataFile = "userdata.json";
+		private const string _noTargetResponse = "[no target]";
 
 		private Regex _backRefExp = new Regex(@"(?<backref>(\.\.\\?)+)(?<dir>[^ ]+)?");
 
@@ -120,7 +121,7 @@ namespace Pelasoft.JumpDir
 			{
 				Log("Sorry, no target directories found");
 			}
-			return "[no target]";
+			return _noTargetResponse;
 		}
 
 		private string UpdateDirectoryUse(string path)
