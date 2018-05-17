@@ -77,17 +77,22 @@ namespace Pelasoft.JumpDir
 					targetPath = Path.GetFullPath(backRef);
 					Verbose(() => $"updated target search path to: {targetPath}\n");
 					var dirGroup = backRefMatch.Groups["dir"];
-					searchDir = dirGroup?.Value;
+					if (!dirGroup.Success)
+					{
+						return searchDir;
+					}
+					searchDir = dirGroup.Value;
 				}
 			}
-			var dirs = Directory.GetDirectories(targetPath)
-				.Select(x => x.Replace(targetPath, "", StringComparison.InvariantCultureIgnoreCase));
+			var dirs = Directory.GetDirectories(targetPath);
+//				.Select(x => x.Replace(targetPath, "", StringComparison.InvariantCultureIgnoreCase));
+//				.Select(x => Path.GetFileName(x));
 			if (searchDir != null)
 			{
 				var searches = new Func<string, string, bool>[]
 				{
-					(dir, search) => dir.StartsWith(search, StringComparison.InvariantCultureIgnoreCase), // 1. dirs that START with the arg
-					(dir, search) => dir.ToLower().Contains(search.ToLower()),   // 2. dirs that CONTAIN the arg
+					(dir, search) => Path.GetFileName(dir).StartsWith(search, StringComparison.InvariantCultureIgnoreCase), // 1. dirs that START with the arg
+					(dir, search) => Path.GetFileName(dir).ToLower().Contains(search.ToLower()),   // 2. dirs that CONTAIN the arg
 				};
 
 				foreach (var search in searches)
@@ -96,7 +101,7 @@ namespace Pelasoft.JumpDir
 					if (results.Count() == 1)
 					{
 						// if theres 1, go to it
-						return ChangeDirectory(results.First());
+						return UpdateDirectoryUse(results.First());
 					}
 					else if (results.Count() > 1)
 					{
@@ -110,14 +115,15 @@ namespace Pelasoft.JumpDir
 			{
 				Log("Possible targets:");
 				dirs.ToList().ForEach(x => Log($"   {x}"));
-			} else
+			}
+			else
 			{
 				Log("Sorry, no target directories found");
 			}
 			return "[no target]";
 		}
 
-		private string ChangeDirectory(string path)
+		private string UpdateDirectoryUse(string path)
 		{
 			var entry = _userData.Entries.FirstOrDefault(x => x.Path == path);
 			if (entry == null)
