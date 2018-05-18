@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,7 +13,7 @@ namespace Pelasoft.JumpDir
 		private const string _userDataDir = ".jumpDir";
 		private const string _userDataFile = "userdata.json";
 
-		private Regex _backRefExp = new Regex(@"(?<backref>[\.\\][\.\\]*)(?<dir>[^ ]+)?");
+		private Regex _backRefExp = new Regex(@"^(?<backref>[\.\\][\.\\]*)(?<dir>[^ ]+)?$");
 
 		private bool _verbose = false;
 		private string _userDataFilePath;
