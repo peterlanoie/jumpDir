@@ -1,1 +1,1 @@
-@D:\Development\jumpDir\script\jumpDir.cmd -list
+@%~dp0jumpDir.cmd -list
