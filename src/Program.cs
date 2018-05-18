@@ -58,16 +58,17 @@ namespace Pelasoft.JumpDir
 			var commands = args.Where(x => x.StartsWith('-')).Select(x => x.ToLower().TrimStart('-'));
 			Verbose(() => $"captured command(s): { string.Join(' ', commands) }");
 
+			args = args.Where(x => !x.StartsWith('-')).ToArray();
+
 			if (commands.Count() > 0)
 			{
 				foreach (var command in commands)
 				{
 					switch (command)
 					{
-						case "clear":
-						case "c":
-							ClearEntries();
-							doCD = false;
+						case "verbose":
+						case "v":
+							_verbose = true;
 							break;
 
 						case "stats":
@@ -76,10 +77,24 @@ namespace Pelasoft.JumpDir
 							doCD = false;
 							break;
 
-						case "verbose":
-						case "v":
-							_verbose = true;
+						case "delete":
+						case "d":
+							if (args.Length > 0)
+							{
+								DeleteKeys(args);
+							} else
+							{
+								Log("!! no search term(s) specified to delete");
+							}
+							doCD = false;
 							break;
+
+						case "clear":
+						case "c":
+							ClearEntries();
+							doCD = false;
+							break;
+
 					}
 				}
 
@@ -87,9 +102,18 @@ namespace Pelasoft.JumpDir
 			}
 			if (doCD)
 			{
-				args = args.Where(x => !x.StartsWith('-')).ToArray();
 				Console.WriteLine(FindDirectory(args.Length > 0 ? args[0] : null));
 			}
+		}
+
+		private void DeleteKeys(string[] args)
+		{
+			var argList = args.ToList();
+			_userData
+				.Entries.Where(x => x.Keys.Any(y => args.Any(z => y == z)))
+				.ToList()
+				.ForEach(x => argList.ForEach(y => x.Keys.Remove(y)));
+			SaveData();
 		}
 
 		private void ShowStats()
