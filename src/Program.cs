@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +18,7 @@ namespace Pelasoft.JumpDir
 		private bool _verbose = false;
 		private string _userDataFilePath;
 		private UserData _userData;
+		private int _repeatTimeout = 10;
 
 		static void Main(string[] args)
 		{
@@ -198,7 +199,7 @@ namespace Pelasoft.JumpDir
 				List<string> candidates;
 
 				var targetIndex = 0;
-				if ((DateTime.Now - _userData.LastAccess).TotalSeconds < 10 && lastSearch == searchDir)
+				if ((DateTime.Now - _userData.LastAccess).TotalSeconds < _repeatTimeout && lastSearch == searchDir)
 				{ // repeated call
 					candidates = _userData.LastCandidates;
 					targetIndex = _userData.LastCandidates.IndexOf(_userData.LastPath) + 1;
@@ -229,6 +230,9 @@ namespace Pelasoft.JumpDir
 							var candidate = candidates[i];
 							Log($"{(candidate == chosenOne ? "==>" : "   ")} {(i + 1).ToString().PadLeft(2)}  {candidate}{(candidate == chosenOne ? "  <==" : "")}");
 						}
+						Log($"\n within {_repeatTimeout} seconds:");
+						Log($"   repeat `jd {searchDir}` to go to next in list");
+//						Log($"\n   `jd {{number}}` to go to numbered entry");
 					}
 					return UpdateDirectoryUse(chosenOne, saveKey ?? searchDir);
 				}
@@ -241,8 +245,8 @@ namespace Pelasoft.JumpDir
 
 			if (dirs.Count() > 0)
 			{
-				Log(" possible targets:");
-				dirs.ToList().ForEach(x => Log($"  {x}"));
+				Log(" possible jump target dirs:");
+				dirs.ToList().ForEach(x => Log($"   {x}"));
 			}
 			else
 			{
