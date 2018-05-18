@@ -304,6 +304,9 @@ namespace Pelasoft.JumpDir
 
 		private void ClearEntries()
 		{
+			_userData.LastCandidates.Clear();
+			_userData.LastPath = null;
+			_userData.LastSearch = null;
 			if (_userData.Entries.Count > 0)
 			{
 				Log($" {_userData.Entries.Count} jumpDir item(s) deleted");
