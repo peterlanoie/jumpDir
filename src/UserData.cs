@@ -10,6 +10,8 @@ namespace Pelasoft.JumpDir
 
 		public string LastPath { get; set; }
 		public string LastSearch { get; set; }
+		public List<string> LastCandidates { get; set; }
+		public DateTime LastAccess { get; set; }
 
 		public UserData()
 		{
