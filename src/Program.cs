@@ -82,7 +82,8 @@ namespace Pelasoft.JumpDir
 							if (args.Length > 0)
 							{
 								DeleteKeys(args);
-							} else
+							}
+							else
 							{
 								Log("!! no search term(s) specified to delete");
 							}
@@ -104,6 +105,9 @@ namespace Pelasoft.JumpDir
 			{
 				Console.WriteLine(FindDirectory(args.Length > 0 ? args[0] : null));
 			}
+
+			_userData.LastAccess = DateTime.Now;
+			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
 		}
 
 		private void DeleteKeys(string[] args)
@@ -113,7 +117,6 @@ namespace Pelasoft.JumpDir
 				.Entries.Where(x => x.Keys.Any(y => args.Any(z => y == z)))
 				.ToList()
 				.ForEach(x => argList.ForEach(y => x.Keys.Remove(y)));
-			SaveData();
 		}
 
 		private void ShowStats()
@@ -127,7 +130,7 @@ namespace Pelasoft.JumpDir
 				Log("  ==========================================");
 				foreach (var entry in _userData.Entries.OrderByDescending(x => x.Rank))
 				{
-					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}");
+					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}  [{ string.Join('|', entry.Keys)}]");
 				}
 				Log("\n  Use the '-[c]lear' command to reset all usage.");
 			}
@@ -140,11 +143,11 @@ namespace Pelasoft.JumpDir
 
 		private string FindDirectory(string searchDir)
 		{
+			var lastSearch = _userData.LastSearch;
 			var targetPath = Path.GetFullPath(".");
 
 			if (searchDir != null)
 			{
-				_userData.LastSearch = searchDir;
 				Verbose(() => $"finding possible directories for: {searchDir}");
 				var backRefMatch = _backRefExp.Match(searchDir);
 
@@ -163,40 +166,61 @@ namespace Pelasoft.JumpDir
 				}
 			}
 			var dirs = Directory.GetDirectories(targetPath);
-			//				.Select(x => x.Replace(targetPath, "", StringComparison.InvariantCultureIgnoreCase));
-			//				.Select(x => Path.GetFileName(x));
+			_userData.LastSearch = searchDir;
 			if (searchDir != null)
 			{
-				var searches = new Func<string, string, bool>[]
-				{
-					(dir, search) => Path.GetFileName(dir).StartsWith(search, StringComparison.InvariantCultureIgnoreCase), // 1. dirs that START with the arg
-					(dir, search) => Path.GetFileName(dir).ToLower().Contains(search.ToLower()),   // 2. dirs that CONTAIN the arg
-				};
+				List<string> candidates;
 
-				foreach (var search in searches)
-				{
-					var results = dirs.Where(dir => search(dir, searchDir)).ToArray();
-					if (results.Count() == 1)
+				var targetIndex = 0;
+				if ((DateTime.Now - _userData.LastAccess).TotalSeconds < 10 && lastSearch == searchDir)
+				{ // repeated call
+					candidates = _userData.LastCandidates;
+					targetIndex = _userData.LastCandidates.IndexOf(_userData.LastPath) + 1;
+					if (targetIndex == _userData.LastCandidates.Count)
 					{
-						// if there's 1, go to it
-						return UpdateDirectoryUse(results.First(), searchDir);
-					}
-					else if (results.Count() > 1)
-					{
-						// if there's more than 1, update the main list
-						dirs = results;
+						targetIndex = 0;
 					}
 				}
+				else
+				{ // fresh call
+					candidates = new List<string>();
+					candidates.AddRange(_userData.Entries.OrderByDescending(x => x.Rank)
+						.Where(x => x.Keys.Any(y => searchDir.Equals(y, StringComparison.InvariantCultureIgnoreCase)))
+						.Select(x => x.Path)
+					);
+					candidates.AddRange(dirs.Where(x => Path.GetFileName(x).StartsWith(searchDir, StringComparison.InvariantCultureIgnoreCase)));
+					candidates.AddRange(dirs.Where(x => Path.GetFileName(x).ToLower().Contains(searchDir.ToLower())));
+					_userData.LastCandidates = candidates = candidates.Distinct().ToList();
+				}
+
+				if (candidates.Count > 0)
+				{
+					var chosenOne = candidates[targetIndex];
+					if (candidates.Count > 1)
+					{
+						for (int i = 0, listCount = candidates.Count; i < listCount; i++)
+						{
+							var candidate = candidates[i];
+							Log($"{(candidate == chosenOne ? "==>" : "   ")} {(i + 1).ToString().PadLeft(2)}  {candidate}{(candidate == chosenOne ? "  <==" : "")}");
+						}
+					}
+					return UpdateDirectoryUse(chosenOne, searchDir);
+				}
+				else
+				{
+					Log($"\n no directory matches found for '{searchDir}'\n");
+				}
+
 			}
 
-			if (dirs.Count() > 1)
+			if (dirs.Count() > 0)
 			{
-				Log("Possible targets:");
-				dirs.ToList().ForEach(x => Log($"   {x}"));
+				Log(" possible targets:");
+				dirs.ToList().ForEach(x => Log($"  {x}"));
 			}
 			else
 			{
-				Log("Sorry, no target directories found");
+				Log(" sorry, no target directories found");
 			}
 			return _noTargetResponse;
 		}
@@ -224,21 +248,13 @@ namespace Pelasoft.JumpDir
 					entry.Keys.Add(search);
 				}
 			}
-
 			_userData.LastPath = path;
-			SaveData();
 			return path;
 		}
 
 		private void ClearEntries()
 		{
 			_userData.Entries.Clear();
-			SaveData();
-		}
-
-		private void SaveData()
-		{
-			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
 		}
 
 		//private void Verbose(string message = null)
