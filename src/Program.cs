@@ -29,6 +29,14 @@ namespace Pelasoft.JumpDir
 			var doCD = true;
 			var hookCommand = "CD";
 
+			var commands = args.Where(x => x.StartsWith('-')).Select(x => x.ToLower().TrimStart('-'));
+
+			if (commands.Any(x => x == "v" || x == "verbose"))
+			{
+				_verbose = true;
+				Log("running in verbose mode\n");
+			}
+
 			Verbose(() => $"raw args: { string.Join(' ', args)}\n");
 			//			args.ToList().ForEach(x => Verbose($"   {x}"));
 
@@ -55,8 +63,7 @@ namespace Pelasoft.JumpDir
 				_userData = new UserData();
 			}
 
-			var commands = args.Where(x => x.StartsWith('-')).Select(x => x.ToLower().TrimStart('-'));
-			Verbose(() => $"captured command(s): { string.Join(' ', commands) }");
+			Verbose(() => $"captured command(s): { string.Join(' ', commands) }\n");
 
 			args = args.Where(x => !x.StartsWith('-')).ToArray();
 
@@ -66,11 +73,6 @@ namespace Pelasoft.JumpDir
 				{
 					switch (command)
 					{
-						case "verbose":
-						case "v":
-							_verbose = true;
-							break;
-
 						case "list":
 						case "stats":
 						case "s":
