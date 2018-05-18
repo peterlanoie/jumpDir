@@ -22,17 +22,17 @@ goto end
 
 :setlocalpath
 echo Setting to current command session only.
-SET "PATH=%PATH%;%~dp0script"
+SET "PATH=%~dp0script;%PATH%"
 goto end
 
 :setuserpath
 echo Setting to user environment variable.
-::SETX "PATH=%PATH%;%~dp0script"
+::SETX "PATH=%~dp0script;%PATH%"
 goto end
 
 :setmachinepath
 echo Setting to system wide environment variable.
-::SETX /M "PATH=%PATH%;%~dp0script"
+::SETX /M "PATH=%~dp0script;%PATH%"
 goto end
 
 :end
