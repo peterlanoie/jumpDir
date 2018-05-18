@@ -12,6 +12,8 @@ namespace Pelasoft.JumpDir
 
 		private List<string> _keys;
 
+		public DateTime LastUsed { get; set; }
+
 		public List<string> Keys
 		{
 			get
