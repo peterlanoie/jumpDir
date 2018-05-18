@@ -183,7 +183,7 @@ namespace Pelasoft.JumpDir
 					{
 						// update entries with current path using the provided search or the full current directory name
 						saveKey = saveKey ?? Path.GetFileName(targetPath);
-						UpdateDirectoryUse(targetPath, saveKey, false);
+						UpdateDirectoryUse(targetPath, saveKey, false, true);
 						Log($" jumpDir entry updated for {saveKey} => {targetPath}");
 						Log($" remove it with 'jd {saveKey} -d");
 					}
@@ -250,7 +250,7 @@ namespace Pelasoft.JumpDir
 						Log($"   repeat `jd {searchDir}` to go to next in list");
 						Log($"   `jd {{number}}` to go to numbered entry");
 					}
-					return UpdateDirectoryUse(chosenOne, saveKey ?? searchDir);
+					return UpdateDirectoryUse(chosenOne, saveKey ?? searchDir, true, saveKey == null);
 				}
 				else
 				{
@@ -271,7 +271,7 @@ namespace Pelasoft.JumpDir
 			return null;
 		}
 
-		private string UpdateDirectoryUse(string path, string search, bool saveLastPath = true)
+		private string UpdateDirectoryUse(string path, string search, bool saveLastPath, bool allowFlyover)
 		{
 			var entry = _userData.Entries.FirstOrDefault(x => x.Path == path);
 			if (entry == null)
@@ -282,7 +282,7 @@ namespace Pelasoft.JumpDir
 			{
 				entry.Rank++;
 			}
-			entry.LastUsed = DateTime.Now;
+			entry.LastUsed = DateTime.Now.AddSeconds(allowFlyover ? 0 : -_flyoverTimeout); // to avoid flyover flushing, force time back
 			if (search.Length >= 2)
 			{
 				if (entry.Keys == null)
