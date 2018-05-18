@@ -196,20 +196,33 @@ namespace Pelasoft.JumpDir
 			_userData.LastSearch = searchDir;
 			if (searchDir != null)
 			{
-				List<string> candidates;
-
+				List<string> candidates = null;
 				var targetIndex = 0;
-				if ((DateTime.Now - _userData.LastAccess).TotalSeconds < _repeatTimeout && lastSearch == searchDir)
-				{ // repeated call
+
+				var isRepeat = ((DateTime.Now - _userData.LastAccess).TotalSeconds < _repeatTimeout) // in the list command time window
+					&& (int.TryParse(searchDir, out targetIndex) || lastSearch == searchDir); // same search or line number
+
+				if (isRepeat)
+				{ // in the list command time window
 					candidates = _userData.LastCandidates;
-					targetIndex = _userData.LastCandidates.IndexOf(_userData.LastPath) + 1;
-					if (targetIndex == _userData.LastCandidates.Count)
+					if (targetIndex == 0)
+					{ // repeated search
+						targetIndex = _userData.LastCandidates.IndexOf(_userData.LastPath) + 1;
+					}
+					else
+					{
+						_userData.LastSearch = searchDir = lastSearch;
+						targetIndex--; // correct for user indexing
+						saveKey = Path.GetFileName(candidates[targetIndex]);
+					}
+					if (targetIndex >= _userData.LastCandidates.Count || targetIndex < 0)
 					{
 						targetIndex = 0;
 					}
 				}
 				else
 				{ // fresh call
+					targetIndex = 0;
 					candidates = new List<string>();
 					candidates.AddRange(_userData.Entries.OrderByDescending(x => x.Rank)
 						.Where(x => x.Keys.Any(y => searchDir.Equals(y, StringComparison.InvariantCultureIgnoreCase)))
@@ -232,7 +245,7 @@ namespace Pelasoft.JumpDir
 						}
 						Log($"\n within {_repeatTimeout} seconds:");
 						Log($"   repeat `jd {searchDir}` to go to next in list");
-//						Log($"\n   `jd {{number}}` to go to numbered entry");
+						Log($"   `jd {{number}}` to go to numbered entry");
 					}
 					return UpdateDirectoryUse(chosenOne, saveKey ?? searchDir);
 				}
