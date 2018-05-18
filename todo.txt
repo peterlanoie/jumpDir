@@ -7,11 +7,18 @@ for windows environments, check current and target drive letters.
 	If they differ, output help
 	Can we send 2 commands?
 
+disregard jumped over dirs
+	save use date stamp with entry
+	remove entries less than 10 seconds old
+
+reranking
+	when max rank hits 100, recompute all: rank/99
+	delete ranks under 1
+
 extra commands:
 
-other ideas:
-	"ji" (i.e. jump into) pushd but with jumpDir searching
-	"jo" (i.e. jump outof) popd
+store help supression by command
+	`jd -q l` (quiets jump list help)
 
 ================================================================================
 	DONE
@@ -47,4 +54,9 @@ search order precendence:
 	sub dirs that CONTATIN arg
 
 change program output to be full command(s), change hook script to just process that command
+
+other ideas:
+	"ji" (i.e. jump into) pushd but with jumpDir searching
+	"jo" (i.e. jump outof) popd
+
 
