@@ -103,7 +103,7 @@ namespace Pelasoft.JumpDir
 			}
 			if (doCD)
 			{
-				Console.WriteLine(FindDirectory(args.Length > 0 ? args[0] : null));
+				Console.WriteLine(FindDirectory(args));
 			}
 
 			_userData.LastAccess = DateTime.Now;
@@ -141,8 +141,9 @@ namespace Pelasoft.JumpDir
 			Log();
 		}
 
-		private string FindDirectory(string searchDir)
+		private string FindDirectory(string[] args)
 		{
+			string searchDir = args.Length > 0 ? args[0] : null;
 			var lastSearch = _userData.LastSearch;
 			var targetPath = Path.GetFullPath(".");
 
@@ -158,6 +159,15 @@ namespace Pelasoft.JumpDir
 					targetPath = Path.GetFullPath(backRef);
 					Verbose(() => $"updated target search path to: {targetPath}\n");
 					var dirGroup = backRefMatch.Groups["dir"];
+
+					if (searchDir == ".")
+					{
+						// update entries with current path using the provided search or the full current directory name
+						var saveKey = args.Length > 1 ? args[1] : Path.GetFileName(targetPath);
+						UpdateDirectoryUse(targetPath, saveKey, false);
+						Log($" jumpDir entry updated for {saveKey} => {targetPath}");
+					}
+
 					if (!dirGroup.Success)
 					{
 						return searchDir;
@@ -225,7 +235,7 @@ namespace Pelasoft.JumpDir
 			return _noTargetResponse;
 		}
 
-		private string UpdateDirectoryUse(string path, string search)
+		private string UpdateDirectoryUse(string path, string search, bool saveLastPath = true)
 		{
 			var entry = _userData.Entries.FirstOrDefault(x => x.Path == path);
 			if (entry == null)
@@ -248,7 +258,10 @@ namespace Pelasoft.JumpDir
 					entry.Keys.Add(search);
 				}
 			}
-			_userData.LastPath = path;
+			if (saveLastPath)
+			{
+				_userData.LastPath = path;
+			}
 			return path;
 		}
 

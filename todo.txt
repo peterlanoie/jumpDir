@@ -8,8 +8,6 @@ search order precendence:
 	sub dirs that START with arg
 	sub dirs that CONTATIN arg
 
-when '.' is entered, save/update the current location (for cases where you CDed in but want to remember it)
-
 allow second argument as key alias?
 	- jd somelongdirectoryname shortname
 
@@ -42,3 +40,7 @@ fuzzy logic behaviors
 	and the one used (first)
 	- when next called with save arg, cd to next in previous set; update last used
 	- maybe emit the set list with numbers on entries and indicator showing which entry is active
+
+when '.' is entered, save/update the current location (for cases where you CDed in but want to remember it)
+	- allow optional second as key, otherwise use full directory name
+
