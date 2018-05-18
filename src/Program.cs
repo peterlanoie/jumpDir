@@ -254,7 +254,7 @@ namespace Pelasoft.JumpDir
 				}
 				else
 				{
-//					Log($"\n no directory matches found for '{searchDir}'\n");
+					Log($"\n no directory matches found for '{searchDir}'\n");
 				}
 
 			}
@@ -266,7 +266,7 @@ namespace Pelasoft.JumpDir
 			}
 			else
 			{
-				Log(" sorry, no target directories found");
+				Log(" sorry, possible no target directories found");
 			}
 			return null;
 		}
