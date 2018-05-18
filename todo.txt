@@ -3,18 +3,11 @@ Blatantly influenced by:
 	https://github.com/wting/autojump (https://olivierlacan.com/posts/cd-is-wasting-your-time/)
 	https://github.com/rupa/z
 
-search order precendence:
-	previous entries that match arg
-	sub dirs that START with arg
-	sub dirs that CONTATIN arg
-
 extra commands:
 
 other ideas:
 	"ji" (i.e. jump into) pushd but with jumpDir searching
 	"jo" (i.e. jump outof) popd
-
-change program output to be full command(s), change hook script to just process that command
 
 ================================================================================
 	DONE
@@ -43,4 +36,11 @@ when '.' is entered, save/update the current location (for cases where you CDed 
 
 allow second argument as key alias?
 	- jd somelongdirectoryname shortname
+
+search order precendence:
+	previous entries that match arg
+	sub dirs that START with arg
+	sub dirs that CONTATIN arg
+
+change program output to be full command(s), change hook script to just process that command
 

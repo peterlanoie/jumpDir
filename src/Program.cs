@@ -12,7 +12,6 @@ namespace Pelasoft.JumpDir
 	{
 		private const string _userDataDir = ".jumpDir";
 		private const string _userDataFile = "userdata.json";
-		private const string _noTargetResponse = "[no target]";
 
 		private Regex _backRefExp = new Regex(@"(?<backref>[\.\\][\.\\]*)(?<dir>[^ ]+)?");
 
@@ -98,12 +97,14 @@ namespace Pelasoft.JumpDir
 
 					}
 				}
-
-				Console.WriteLine(_noTargetResponse);
 			}
 			if (doCD)
 			{
-				Console.WriteLine(FindDirectory(args));
+				var dir = FindDirectory(args);
+				if (!string.IsNullOrWhiteSpace(dir))
+				{
+					Console.WriteLine($"CD {dir}");
+				}
 			}
 
 			_userData.LastAccess = DateTime.Now;
@@ -235,7 +236,7 @@ namespace Pelasoft.JumpDir
 			{
 				Log(" sorry, no target directories found");
 			}
-			return _noTargetResponse;
+			return null;
 		}
 
 		private string UpdateDirectoryUse(string path, string search, bool saveLastPath = true)
