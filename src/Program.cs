@@ -27,6 +27,7 @@ namespace Pelasoft.JumpDir
 		private void Run(string[] args)
 		{
 			var doCD = true;
+			var hookCommand = "CD";
 
 			Verbose(() => $"raw args: { string.Join(' ', args)}\n");
 			//			args.ToList().ForEach(x => Verbose($"   {x}"));
@@ -70,6 +71,7 @@ namespace Pelasoft.JumpDir
 							_verbose = true;
 							break;
 
+						case "list":
 						case "stats":
 						case "s":
 							ShowStats();
@@ -89,12 +91,20 @@ namespace Pelasoft.JumpDir
 							doCD = false;
 							break;
 
+						case "pushd":
+							hookCommand = command;
+							break;
+
+						case "popd":
+							Console.WriteLine("POPD");
+							doCD = false;
+							break;
+
 						case "clear":
 						case "c":
 							ClearEntries();
 							doCD = false;
 							break;
-
 					}
 				}
 			}
@@ -103,7 +113,7 @@ namespace Pelasoft.JumpDir
 				var dir = FindDirectory(args);
 				if (!string.IsNullOrWhiteSpace(dir))
 				{
-					Console.WriteLine($"CD {dir}");
+					Console.WriteLine($"{hookCommand} {dir}");
 				}
 			}
 
