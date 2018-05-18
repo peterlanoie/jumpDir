@@ -8,17 +8,18 @@ search order precendence:
 	sub dirs that START with arg
 	sub dirs that CONTATIN arg
 
-fuzzy logic behaviors
-	- save possible matches (both previous used matched entries and matched local dirs)
-	and the one used (first)
-	- when next called without arg, cd to first after last used in previous set; update last used
-	- maybe emit the set list with numbers on entries and indicator showing which entry is active
+when '.' is entered, save/update the current location (for cases where you CDed in but want to remember it)
+
+allow second argument as key alias?
+	- jd somelongdirectoryname shortname
 
 extra commands:
 
 other ideas:
 	"ji" (i.e. jump into) pushd but with jumpDir searching
 	"jo" (i.e. jump outof) popd
+
+change program output to be full command(s), change hook script to just process that command
 
 ================================================================================
 	DONE
@@ -36,3 +37,8 @@ when arg contains environment separator (e.g. / or \)
 
 don't save backref only (i.e. "..\*n")
 
+fuzzy logic behaviors
+	- save possible matches (both previous used matched entries and matched local dirs)
+	and the one used (first)
+	- when next called with save arg, cd to next in previous set; update last used
+	- maybe emit the set list with numbers on entries and indicator showing which entry is active
