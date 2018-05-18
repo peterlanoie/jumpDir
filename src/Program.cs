@@ -19,6 +19,7 @@ namespace Pelasoft.JumpDir
 		private string _userDataFilePath;
 		private UserData _userData;
 		private int _repeatTimeout = 10;
+		private int _flyoverTimeout = 10; // max seconds before a subsequent jump purges a new entry
 
 		static void Main(string[] args)
 		{
@@ -54,6 +55,8 @@ namespace Pelasoft.JumpDir
 			if (File.Exists(_userDataFilePath))
 			{
 				_userData = JsonConvert.DeserializeObject<UserData>(File.ReadAllText(_userDataFilePath));
+				int removed = _userData.Entries.RemoveAll(x => x.Rank <= 1 && (DateTime.Now - x.LastUsed).TotalSeconds < _flyoverTimeout);
+				Verbose(() => $"removed {removed} flyover entries\n");
 			}
 			else
 			{
@@ -279,6 +282,7 @@ namespace Pelasoft.JumpDir
 			{
 				entry.Rank++;
 			}
+			entry.LastUsed = DateTime.Now;
 			if (search.Length >= 2)
 			{
 				if (entry.Keys == null)
