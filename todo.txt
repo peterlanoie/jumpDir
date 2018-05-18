@@ -8,9 +8,6 @@ search order precendence:
 	sub dirs that START with arg
 	sub dirs that CONTATIN arg
 
-allow second argument as key alias?
-	- jd somelongdirectoryname shortname
-
 extra commands:
 
 other ideas:
@@ -43,4 +40,7 @@ fuzzy logic behaviors
 
 when '.' is entered, save/update the current location (for cases where you CDed in but want to remember it)
 	- allow optional second as key, otherwise use full directory name
+
+allow second argument as key alias?
+	- jd somelongdirectoryname shortname
 

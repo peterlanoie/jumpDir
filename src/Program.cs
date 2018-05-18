@@ -121,18 +121,19 @@ namespace Pelasoft.JumpDir
 
 		private void ShowStats()
 		{
-			Log("  jumpDir usage statistics\n");
+			Log(" jumpDir usage statistics\n");
 
 			if (_userData.Entries.Count() > 0)
 			{
-				Log("  Rank    Path");
+				Log(" Rank    Path [key(s)]");
 				var maxWidth = _userData.Entries.Max(x => x.Path.Length);
-				Log("  ==========================================");
+				Log(" ==========================================");
 				foreach (var entry in _userData.Entries.OrderByDescending(x => x.Rank))
 				{
 					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}  [{ string.Join('|', entry.Keys)}]");
 				}
-				Log("\n  Use the '-[c]lear' command to reset all usage.");
+				Log("\n use '-[c]lear' to reset all usage");
+				Log("\n use 'key [key...n] -[d]elete' to delete individual key(s)");
 			}
 			else
 			{
@@ -144,6 +145,7 @@ namespace Pelasoft.JumpDir
 		private string FindDirectory(string[] args)
 		{
 			string searchDir = args.Length > 0 ? args[0] : null;
+			var saveKey = args.Length > 1 ? args[1] : null;
 			var lastSearch = _userData.LastSearch;
 			var targetPath = Path.GetFullPath(".");
 
@@ -163,9 +165,10 @@ namespace Pelasoft.JumpDir
 					if (searchDir == ".")
 					{
 						// update entries with current path using the provided search or the full current directory name
-						var saveKey = args.Length > 1 ? args[1] : Path.GetFileName(targetPath);
+						saveKey = saveKey ?? Path.GetFileName(targetPath);
 						UpdateDirectoryUse(targetPath, saveKey, false);
 						Log($" jumpDir entry updated for {saveKey} => {targetPath}");
+						Log($" remove it with 'jd {saveKey} -d");
 					}
 
 					if (!dirGroup.Success)
@@ -214,7 +217,7 @@ namespace Pelasoft.JumpDir
 							Log($"{(candidate == chosenOne ? "==>" : "   ")} {(i + 1).ToString().PadLeft(2)}  {candidate}{(candidate == chosenOne ? "  <==" : "")}");
 						}
 					}
-					return UpdateDirectoryUse(chosenOne, searchDir);
+					return UpdateDirectoryUse(chosenOne, saveKey ?? searchDir);
 				}
 				else
 				{
