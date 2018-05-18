@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -147,11 +147,11 @@ namespace Pelasoft.JumpDir
 					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}  [{ string.Join('|', entry.Keys)}]");
 				}
 				Log("\n use '-[c]lear' to reset all usage");
-				Log("\n use 'key [key...n] -[d]elete' to delete individual key(s)");
+				Log(" use 'key [key...n] -[d]elete' to delete individual key(s)");
 			}
 			else
 			{
-				Log("No entries yet.");
+				Log(" no jumpDir items yet");
 			}
 			Log();
 		}
@@ -238,7 +238,7 @@ namespace Pelasoft.JumpDir
 				}
 				else
 				{
-					Log($"\n no directory matches found for '{searchDir}'\n");
+//					Log($"\n no directory matches found for '{searchDir}'\n");
 				}
 
 			}
@@ -287,7 +287,15 @@ namespace Pelasoft.JumpDir
 
 		private void ClearEntries()
 		{
-			_userData.Entries.Clear();
+			if (_userData.Entries.Count > 0)
+			{
+				Log($" {_userData.Entries.Count} jumpDir item(s) deleted");
+				_userData.Entries.Clear();
+			}
+			else
+			{
+				Log($" no jumpDir items to delete");
+			}
 		}
 
 		//private void Verbose(string message = null)
