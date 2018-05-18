@@ -3,6 +3,10 @@ Blatantly influenced by:
 	https://github.com/wting/autojump (https://olivierlacan.com/posts/cd-is-wasting-your-time/)
 	https://github.com/rupa/z
 
+for windows environments, check current and target drive letters. 
+	If they differ, output help
+	Can we send 2 commands?
+
 extra commands:
 
 other ideas:
