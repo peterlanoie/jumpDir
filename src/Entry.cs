@@ -10,6 +10,19 @@ namespace Pelasoft.JumpDir
 
 		public decimal Rank { get; set; }
 
-		public List<string> Keys { get; set; }
+		private List<string> _keys;
+
+		public List<string> Keys
+		{
+			get
+			{
+				if (_keys == null)
+				{
+					_keys = new List<string>();
+				}
+				return _keys;
+			}
+			set { _keys = value; }
+		}
 	}
 }
