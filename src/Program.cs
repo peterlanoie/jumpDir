@@ -335,17 +335,25 @@ namespace Pelasoft.JumpDir
 
 		private void ClearEntries()
 		{
-			_userData.LastCandidates.Clear();
-			_userData.LastPath = null;
-			_userData.LastSearch = null;
-			if (_userData.Entries.Count > 0)
+			var count = _userData.Entries.Count;
+			if (count > 0)
 			{
-				Log($" {_userData.Entries.Count} jumpDir item(s) deleted");
-				_userData.Entries.Clear();
+				Log($" Are you sure you want to clear all {count} item(s) (press Y to confirm)? ", false);
+				var confirm = Console.ReadKey(true);
+				Log();
+				if(confirm.Key == ConsoleKey.Y){
+					_userData.LastCandidates.Clear();
+					_userData.LastPath = null;
+					_userData.LastSearch = null;
+					_userData.Entries.Clear();
+					Log($" {count} jumpDir item(s) deleted");
+				} else {
+					Log(" clear cancelled");
+				}
 			}
 			else
 			{
-				Log($" no jumpDir items to delete");
+				Log(" no jumpDir items to delete");
 			}
 		}
 
@@ -366,8 +374,8 @@ namespace Pelasoft.JumpDir
 		private void Log(string message = null, bool newLine = true)
 		{
 			if(newLine)
-		{
-			Console.Error.WriteLine(message);
+			{
+				Console.Error.WriteLine(message);
 			} else {
 				Console.Error.Write(message);
 			}
