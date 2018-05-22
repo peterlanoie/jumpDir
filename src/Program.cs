@@ -363,9 +363,14 @@ namespace Pelasoft.JumpDir
 		}
 
 
-		private void Log(string message = null)
+		private void Log(string message = null, bool newLine = true)
+		{
+			if(newLine)
 		{
 			Console.Error.WriteLine(message);
+			} else {
+				Console.Error.Write(message);
+			}
 		}
 
 	}
