@@ -55,24 +55,6 @@ namespace Pelasoft.JumpDir
 			if (File.Exists(_userDataFilePath))
 			{
 				_userData = JsonConvert.DeserializeObject<UserData>(File.ReadAllText(_userDataFilePath));
-				var flyOvers = _userData.Entries.Where(x => (DateTime.Now - x.LastUsed).TotalSeconds < _flyoverTimeout).ToList();
-				if (flyOvers.Count > 0)
-				{
-					foreach (var flyOver in flyOvers)
-					{
-						if (flyOver.Rank > 1)
-						{
-							flyOver.Rank--;
-							Verbose(() => $"deranking {flyOver.Path}");
-						}
-						else
-						{
-							Verbose(() => $"removing {flyOver.Path} flyover entry");
-							_userData.Entries.Remove(flyOver);
-						}
-					}
-					Verbose(() => "\n");
-				}
 			}
 			else
 			{
@@ -132,6 +114,24 @@ namespace Pelasoft.JumpDir
 			}
 			if (doCD)
 			{
+				var flyOvers = _userData.Entries.Where(x => (DateTime.Now - x.LastUsed).TotalSeconds < _flyoverTimeout).ToList();
+				if (flyOvers.Count > 0)
+				{
+					foreach (var flyOver in flyOvers)
+					{
+						if (flyOver.Rank > 1)
+						{
+							flyOver.Rank--;
+							Verbose(() => $"deranking {flyOver.Path}");
+						}
+						else
+						{
+							Verbose(() => $"removing {flyOver.Path} flyover entry");
+							_userData.Entries.Remove(flyOver);
+						}
+					}
+					Verbose(() => "\n");
+				}
 				var dir = FindDirectory(args);
 				if (!string.IsNullOrWhiteSpace(dir))
 				{
