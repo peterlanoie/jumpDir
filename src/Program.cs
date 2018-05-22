@@ -135,7 +135,13 @@ namespace Pelasoft.JumpDir
 				var dir = FindDirectory(args);
 				if (!string.IsNullOrWhiteSpace(dir))
 				{
-					Console.WriteLine($"{hookCommand} {dir}");
+					var command = hookCommand;
+					if(dir.Contains(' ')){
+						dir = $"\"{dir}\"";
+					}
+					command += $" {dir}";
+					Verbose(() => $"\ncommand to be issued: {command}");
+					Console.WriteLine(command);
 				}
 			}
 
