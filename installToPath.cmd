@@ -27,12 +27,12 @@ goto end
 
 :setuserpath
 echo Setting to user environment variable.
-::SETX "PATH=%~dp0script;%PATH%"
+SETX PATH "%~dp0script;%PATH%"
 goto end
 
 :setmachinepath
 echo Setting to system wide environment variable.
-::SETX /M "PATH=%~dp0script;%PATH%"
+::SETX /M PATH "%~dp0script;%PATH%"
 goto end
 
 :end
