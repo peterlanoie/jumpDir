@@ -216,7 +216,7 @@ namespace Pelasoft.JumpDir
 						saveKey = saveKey ?? Path.GetFileName(targetPath);
 						UpdateDirectoryUse(targetPath, saveKey, false, true);
 						Log($" jumpDir entry updated for {saveKey} => {targetPath}");
-						Log($" remove it with 'jd {saveKey} -d");
+						Log($" remove it with 'jd {saveKey} -d'");
 					}
 
 					if (!dirGroup.Success)
