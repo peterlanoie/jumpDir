@@ -153,9 +153,18 @@ namespace Pelasoft.JumpDir
 		{
 			var argList = args.ToList();
 			_userData
-				.Entries.Where(x => x.Keys.Any(y => args.Any(z => y == z)))
+				.Entries.Where(x => x.Keys.Any(y => args.Any(z => y.Equals(z, StringComparison.InvariantCultureIgnoreCase))))
 				.ToList()
-				.ForEach(x => argList.ForEach(y => x.Keys.Remove(y)));
+				.ForEach(x => argList.ForEach(y => {
+						Verbose(() => $"removing keys in matched path '{x.Path}'");
+					for(var i = x.Keys.Count-1; i >= 0; i--){
+						Verbose(() => $"comparing argument '{y}' with '{x.Keys[i]}' for possible removal");
+						if(x.Keys[i].Equals(y, StringComparison.InvariantCultureIgnoreCase)){
+							Log($" removed key '{x.Keys[i]}' for path '{x.Path}'");
+							x.Keys.RemoveAt(i);
+						}
+					}
+				}));
 		}
 
 		private void ShowStats()
