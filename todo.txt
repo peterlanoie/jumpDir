@@ -7,9 +7,16 @@ for windows environments, check current and target drive letters.
 	If they differ, output help
 	Can we send 2 commands?
 
-disregard jumped over dirs
-	save use date stamp with entry
-	remove entries less than 10 seconds old
+!!! Check on spaces... may need to quote the resulting CD command.
+- also, add outgoing CD command to verbose output
+
+only purge flyovers when actually changing directories
+
+modify hook script to delimit on ; and run all commands instead of setting result to env var
+
+add drive letter segment to path regex, issue multiple commands:
+	'cd {path}'
+	'{drive letter}:' (to switch drives)
 
 reranking
 	when max rank hits 100, recompute all: rank/99
@@ -17,7 +24,7 @@ reranking
 
 extra commands:
 
-store help supression by command
+store help suppression by command
 	`jd -q l` (quiets jump list help)
 
 ================================================================================
@@ -59,4 +66,6 @@ other ideas:
 	"ji" (i.e. jump into) pushd but with jumpDir searching
 	"jo" (i.e. jump outof) popd
 
-
+disregard jumped over dirs
+	save use date stamp with entry
+	remove entries less than 10 seconds old
