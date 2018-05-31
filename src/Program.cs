@@ -86,7 +86,7 @@ namespace Pelasoft.JumpDir
 						case "d":
 							if (args.Length > 0)
 							{
-								DeleteKeys(args);
+								DeleteItems(args);
 							}
 							else
 							{
@@ -149,22 +149,41 @@ namespace Pelasoft.JumpDir
 			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
 		}
 
-		private void DeleteKeys(string[] args)
+		private void DeleteItems(string[] args)
 		{
 			var argList = args.ToList();
-			_userData
-				.Entries.Where(x => x.Keys.Any(y => args.Any(z => y.Equals(z, StringComparison.InvariantCultureIgnoreCase))))
-				.ToList()
-				.ForEach(x => argList.ForEach(y => {
-						Verbose(() => $"removing keys in matched path '{x.Path}'");
-					for(var i = x.Keys.Count-1; i >= 0; i--){
-						Verbose(() => $"comparing argument '{y}' with '{x.Keys[i]}' for possible removal");
-						if(x.Keys[i].Equals(y, StringComparison.InvariantCultureIgnoreCase)){
-							Log($" removed key '{x.Keys[i]}' for path '{x.Path}'");
-							x.Keys.RemoveAt(i);
-						}
-					}
-				}));
+			var orderedItems = GetOrderedItems().ToArray();
+
+			foreach(var item in args)
+			{
+				if(int.TryParse(item, out var itemNumber) && itemNumber >= 0 && itemNumber <= orderedItems.Length)
+				{
+					var entry = orderedItems[itemNumber-1];
+					_userData.Entries.Remove(entry);
+					Log($" removed entry #{itemNumber}: '{entry.Path}'");
+				} else {
+					_userData
+						.Entries.Where(x => x.Keys.Any(y => y.Equals(item, StringComparison.InvariantCultureIgnoreCase)))
+						.ToList()
+						.ForEach(x => argList.ForEach(y => {
+							Verbose(() => $"removing keys in matched path '{x.Path}'");
+							for(var i = x.Keys.Count-1; i >= 0; i--){
+								Verbose(() => $"comparing argument '{y}' with '{x.Keys[i]}' for possible removal");
+								if(x.Keys[i].Equals(y, StringComparison.InvariantCultureIgnoreCase)){
+									Log($" removed key '{x.Keys[i]}' for path '{x.Path}'");
+									x.Keys.RemoveAt(i);
+								}
+							}
+						}));
+				}
+			}
+		}
+
+		private IEnumerable<Entry> GetOrderedItems()
+		{
+			return _userData.Entries
+				.OrderByDescending(x => x.Rank)
+				.ThenBy(x => x.Path);
 		}
 
 		private void ShowStats()
@@ -173,15 +192,18 @@ namespace Pelasoft.JumpDir
 
 			if (_userData.Entries.Count() > 0)
 			{
-				Log(" Rank    Path [key(s)]");
+				Log("  #  Rank  Path [key(s)]");
 				var maxWidth = _userData.Entries.Max(x => x.Path.Length);
-				Log(" ==========================================");
-				foreach (var entry in _userData.Entries.OrderByDescending(x => x.Rank))
+				Log(" ========================================");
+				var list = GetOrderedItems().ToArray();
+				for(int i = 1; i <= list.Length; i++)
 				{
-					Log($"  {entry.Rank.ToString().PadLeft(6)}  {entry.Path}  [{ string.Join('|', entry.Keys)}]");
+					var item = list[i-1];
+					Log($" {i.ToString("##").PadLeft(2)}  {item.Rank.ToString("###.0").PadLeft(4)}  {item.Path}  [{ string.Join('|', item.Keys)}]");
 				}
 				Log("\n use '-[c]lear' to reset all usage");
-				Log(" use 'key [key...n] -[d]elete' to delete individual key(s)");
+				Log(" use '-[d]elete key [key...n]' to delete individual key(s)");
+				Log(" use '-[d]elete # [#...n]' to delete entries");
 			}
 			else
 			{
