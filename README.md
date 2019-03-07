@@ -29,7 +29,7 @@ For example, while sitting in Windows C drive root (`C:\`):
 
     C:\>jd x8
     
-    C:\Program Files (x86)>jl
+    C:\Program Files (x86)>
 
 If more than one directory matches, you'll change directory to the first one, and JumpDir will return a list of all the possible locations, and indicate where it landed you and numbers for all the entries.
 
