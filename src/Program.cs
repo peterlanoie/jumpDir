@@ -125,6 +125,11 @@ namespace Pelasoft.JumpDir
 							ShowHelp(true);
 							doCD = false;
 							break;
+
+						case "docs":
+							Console.WriteLine("start https://github.com/peterlanoie/jumpDir/blob/master/README.md");
+							doCD = false;
+							break;
 					}
 				}
 			}

@@ -24,4 +24,6 @@ JumpDir Help
         Jumps Out using `popd` to return back to the last dir on the pushd stack (from either `pushd` or `ji` command)
 
   Visit the project on GitHub for more detailed help.
-  
+    https://github.com/peterlanoie/jumpDir/blob/master/README.md
+    or just type `jd -docs`
+    
