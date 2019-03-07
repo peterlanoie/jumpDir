@@ -76,6 +76,7 @@ namespace Pelasoft.JumpDir
 					switch (command)
 					{
 						case "list":
+						case "l":
 						case "stats":
 						case "s":
 							ShowStats();
