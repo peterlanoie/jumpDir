@@ -109,6 +109,21 @@ namespace Pelasoft.JumpDir
 							ClearEntries();
 							doCD = false;
 							break;
+						
+						case "-help":
+						case "help":
+						case "h":
+						case "-h":
+							ShowHelp();
+							doCD = false;
+							break;
+
+						case "":
+						case "fullhelp":
+						case "fh":
+							ShowHelp(true);
+							doCD = false;
+							break;
 					}
 				}
 			}
@@ -149,7 +164,16 @@ namespace Pelasoft.JumpDir
 			File.WriteAllText(_userDataFilePath, JsonConvert.SerializeObject(_userData, Formatting.Indented));
 		}
 
-		private void DeleteItems(string[] args)
+        private void ShowHelp(bool full = false)
+        {
+			var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+			var rundir = Path.GetDirectoryName(assembly.Location);
+			var helpfile = Path.GetFullPath(Path.Combine(rundir, @"../../help.txt"));
+			Log(File.ReadAllText(helpfile));
+			Log($"  Your user data lives here: {_userDataFilePath}");
+        }
+
+        private void DeleteItems(string[] args)
 		{
 			var argList = args.ToList();
 			var orderedItems = GetOrderedItems().ToArray();
@@ -316,6 +340,7 @@ namespace Pelasoft.JumpDir
 			{
 				Log(" possible jump target dirs:");
 				dirs.ToList().ForEach(x => Log($"   {x}"));
+				Log(" \"jd -h\" for help");
 			}
 			else
 			{

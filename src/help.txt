@@ -1,0 +1,27 @@
+JumpDir Help
+
+  Usage:
+     jd <search term>
+
+  Additional commands:
+    Commands can be called using the standard hook script and a switch like this:
+      jd -switch [args...]
+    Some frequent commands have dedicated hook scripts. Those are noted after the command in ` `s.
+
+    -c, -clear
+        Clears all the saved entries.    
+    -d, -delete <number> | <key>
+        Deletes a previously visited item by <number> (use -list to see them)
+        or by the matching <term>.
+    -h, -help, `jh`
+        Displays this help.
+    -l, -list, `jl`
+    -s, -stats
+        Lists the statistics for visited locations
+    -pushd, `ji`
+        Jumps into the matched directory using pushd 
+    -popd (`jo` - for "jump out")
+        Jumps Out using `popd` to return back to the last dir on the pushd stack (from either `pushd` or `ji` command)
+
+  Visit the project on GitHub for more detailed help.
+  
