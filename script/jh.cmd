@@ -1,0 +1,1 @@
+@%~dp0jumpDir.cmd -help
