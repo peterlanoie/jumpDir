@@ -3,6 +3,25 @@ Blatantly influenced by:
 	https://github.com/wting/autojump (https://olivierlacan.com/posts/cd-is-wasting-your-time/)
 	https://github.com/rupa/z
 
+fix bug
+- try `jd 1` during repeat timeout: throws index exception
+
+new feature
+- while `..\<key>` will get you to a match on <key> in the parent dir
+- how about `..<key>` gets you to a match on the first parent in the current path?
+
+improvement: should -delete always show the new list? 
+  since the list changed, the ordinals changed. 
+  if you want to delete several items, you need to `jl` again to see the list
+
+when arg starting with `-` is found
+	- check for existing directory, if found emit warning, treat as dir
+
+new switch "-rtime n"
+- sets the repeat timeout to n seconds (persisted in user data)
+new switch "-ftime n"
+- sets the flyover timeout to n seconds (persisted in user data)
+
 for windows environments, check current and target drive letters. 
 	If they differ, output help
 	Can we send 2 commands?
@@ -26,6 +45,9 @@ extra commands:
 
 store help suppression by command
 	`jd -q l` (quiets jump list help)
+
+research exe packaging
+- https://stackoverflow.com/questions/44074121/build-net-core-console-application-to-output-an-exe
 
 ================================================================================
 	DONE
